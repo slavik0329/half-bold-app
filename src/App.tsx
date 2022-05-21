@@ -46,7 +46,7 @@ function App() {
             <>
               <Box paddingTop={2}>
                 <TextField
-                  label="Input"
+                  label="Paste in some text to make more readible"
                   multiline
                   rows={20}
                   fullWidth={true}
