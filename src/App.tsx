@@ -6,6 +6,7 @@ import {
   createTheme,
   TextField,
   ThemeProvider,
+  Paper,
 } from "@mui/material";
 import { Header } from "./Header";
 import styled from "styled-components";
@@ -22,13 +23,13 @@ const theme = createTheme({
 const Bold = styled.span`
   font-family: Roboto;
   font-weight: bold;
-  font-size: 18px;
-  line-height: 30px;
+  font-size: 24px;
+  line-height: 40px;
 `;
 const NotBold = styled.span`
   font-family: Roboto;
-  font-size: 18px;
-  line-height: 30px;
+  font-size: 24px;
+  line-height: 40px;
 
 `;
 
@@ -62,25 +63,35 @@ function App() {
               <Button
                 variant={"contained"}
                 onClick={() => {
-                  const words = input.split(" ");
+                  const paragraphs = input.split(/[\n]+/)
 
-                  const out = words.map((word) => {
-                    const howManyToBold = Math.ceil(word.length / 2);
-                    const firstHalf = word.substring(0, howManyToBold);
-                    const secondHalf = word.substring(
-                      howManyToBold,
-                      word.length
-                    );
-                    return (
-                      <span>
+                  let final: JSX.Element[] = [];
+
+                  for (const paragraph of paragraphs) {
+                    const words = paragraph.split(/[\s]+/)
+
+                    const out = words.map((word) => {
+                      const howManyToBold = Math.ceil(word.length / 2);
+                      const firstHalf = word.substring(0, howManyToBold);
+                      const secondHalf = word.substring(
+                        howManyToBold,
+                        word.length
+                      );
+                      return (
+                        <span>
                         <Bold>{firstHalf}</Bold>
                         <NotBold>{secondHalf}</NotBold>
                         <span> </span>
                       </span>
-                    );
-                  });
+                      );
+                    });
 
-                  setOutput(out);
+                    final = [...final, ...out, <span>{'\n\n'}</span>]
+                  }
+
+
+
+                  setOutput(final);
                 }}
               >
                 Fix the autism
@@ -90,8 +101,10 @@ function App() {
         ) : (
           <>
             <Box display={'flex'} justifyContent={'center'} flexDirection={'row'} alignItems={'center'}>
-              <Box paddingTop={2} whiteSpace={"pre-wrap"} maxWidth={300}>
-                {output}
+              <Box paddingTop={2} whiteSpace={"pre-wrap"} maxWidth={360}>
+                <Paper sx={{padding: 3, borderRadius: 2}} elevation={20} >
+                  {output}
+                </Paper>
               </Box>
 
             </Box>
