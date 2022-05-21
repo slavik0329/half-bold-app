@@ -11,6 +11,7 @@ import {
 import { Header } from "./Header";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
+import GitHub from "@mui/icons-material/GitHub";
 
 const theme = createTheme({
   palette: {
@@ -30,7 +31,6 @@ const NotBold = styled.span`
   font-family: Roboto;
   font-size: 24px;
   line-height: 40px;
-
 `;
 
 function App() {
@@ -39,90 +39,101 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Header />
       <Container maxWidth={"lg"}>
-        <Header />
-
-        {!output ? (
-          <>
-            <Box paddingTop={2}>
-              <TextField
-                label="Input"
-                multiline
-                rows={20}
-                fullWidth={true}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </Box>
-            <Box
-              justifyContent={"flex-end"}
-              flexDirection={"row"}
-              display={"flex"}
-              paddingTop={1}
-            >
-              <Button
-                variant={"contained"}
-                onClick={() => {
-                  const paragraphs = input.split(/[\n]+/)
-
-                  let final: JSX.Element[] = [];
-
-                  for (const paragraph of paragraphs) {
-                    const words = paragraph.split(/[\s]+/)
-
-                    const out = words.map((word) => {
-                      const howManyToBold = Math.ceil(word.length / 2);
-                      const firstHalf = word.substring(0, howManyToBold);
-                      const secondHalf = word.substring(
-                        howManyToBold,
-                        word.length
-                      );
-                      return (
-                        <span>
-                        <Bold>{firstHalf}</Bold>
-                        <NotBold>{secondHalf}</NotBold>
-                        <span> </span>
-                      </span>
-                      );
-                    });
-
-                    final = [...final, ...out, <span>{'\n\n'}</span>]
-                  }
-
-
-
-                  setOutput(final);
-                }}
-              >
-                Fix the autism
-              </Button>
-            </Box>
-          </>
-        ) : (
-          <>
-            <Box display={'flex'} justifyContent={'center'} flexDirection={'row'} alignItems={'center'}>
-              <Box paddingTop={2} whiteSpace={"pre-wrap"} maxWidth={360}>
-                <Paper sx={{padding: 3, borderRadius: 2}} elevation={20} >
-                  {output}
-                </Paper>
+        <Paper sx={{ padding: 2, marginTop: 2 }}>
+          {!output ? (
+            <>
+              <Box paddingTop={2}>
+                <TextField
+                  label="Input"
+                  multiline
+                  rows={20}
+                  fullWidth={true}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
               </Box>
-
-            </Box>
-            <Box
-              justifyContent={"flex-end"}
-              flexDirection={"row"}
-              display={"flex"}
-              paddingTop={1}
-            >
-              <Button
-                variant={"contained"}
-                onClick={() => setOutput(undefined)}
+              <Box
+                justifyContent={"flex-end"}
+                flexDirection={"row"}
+                display={"flex"}
+                paddingTop={1}
               >
-                Clear
-              </Button>
-            </Box>
-          </>
-        )}
+                <Button
+                  variant={"contained"}
+                  onClick={() => {
+                    const paragraphs = input.split(/[\n]+/);
+
+                    let final: JSX.Element[] = [];
+
+                    for (const paragraph of paragraphs) {
+                      const words = paragraph.split(/[\s]+/);
+
+                      const out = words.map((word) => {
+                        const howManyToBold = Math.ceil(word.length / 2);
+                        const firstHalf = word.substring(0, howManyToBold);
+                        const secondHalf = word.substring(
+                          howManyToBold,
+                          word.length
+                        );
+                        return (
+                          <span>
+                            <Bold>{firstHalf}</Bold>
+                            <NotBold>{secondHalf}</NotBold>
+                            <span> </span>
+                          </span>
+                        );
+                      });
+
+                      final = [...final, ...out, <span>{"\n\n"}</span>];
+                    }
+
+                    setOutput(final);
+                  }}
+                >
+                  Go
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                flexDirection={"row"}
+                alignItems={"center"}
+              >
+                <Box paddingTop={2} whiteSpace={"pre-wrap"} maxWidth={360}>
+                  <Paper sx={{ padding: 3, borderRadius: 2 }} elevation={20}>
+                    {output}
+                  </Paper>
+                </Box>
+              </Box>
+              <Box
+                justifyContent={"flex-end"}
+                flexDirection={"row"}
+                display={"flex"}
+                paddingTop={1}
+              >
+                <Button
+                  variant={"contained"}
+                  onClick={() => setOutput(undefined)}
+                >
+                  Reset
+                </Button>
+              </Box>
+            </>
+          )}
+          <Button
+            variant="outlined"
+            startIcon={<GitHub />}
+            href={"https://github.com/slavik0329/half-bold-app"}
+            target={"_blank"}
+          >
+            Github
+          </Button>
+        </Paper>
       </Container>
     </ThemeProvider>
   );
