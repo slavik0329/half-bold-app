@@ -20,9 +20,17 @@ const theme = createTheme({
 });
 
 const Bold = styled.span`
+  font-family: Roboto;
   font-weight: bold;
+  font-size: 18px;
+  line-height: 30px;
 `;
-const NotBold = styled.span``;
+const NotBold = styled.span`
+  font-family: Roboto;
+  font-size: 18px;
+  line-height: 30px;
+
+`;
 
 function App() {
   const [input, setInput] = useState("");
@@ -81,8 +89,11 @@ function App() {
           </>
         ) : (
           <>
-            <Box paddingTop={2} whiteSpace={"pre-wrap"}>
-              {output}
+            <Box display={'flex'} justifyContent={'center'} flexDirection={'row'} alignItems={'center'}>
+              <Box paddingTop={2} whiteSpace={"pre-wrap"} maxWidth={300}>
+                {output}
+              </Box>
+
             </Box>
             <Box
               justifyContent={"flex-end"}
