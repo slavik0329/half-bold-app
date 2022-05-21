@@ -118,7 +118,10 @@ function App() {
               >
                 <Button
                   variant={"contained"}
-                  onClick={() => setOutput(undefined)}
+                  onClick={() => {
+                    setOutput(undefined);
+                    setInput("");
+                  }}
                 >
                   Reset
                 </Button>
