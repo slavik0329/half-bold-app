@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import {
   Box,
@@ -12,6 +12,7 @@ import { Header } from "./Header";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 import GitHub from "@mui/icons-material/GitHub";
+import gzip from "gzip-js";
 
 const theme = createTheme({
   palette: {
@@ -36,6 +37,55 @@ const NotBold = styled.span`
 function App() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState<JSX.Element[]>();
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const content = urlParams.get("content");
+
+    if (content) {
+      const fromBase64 = atob(content)
+        .split("")
+        .map(function (c) {
+          return c.charCodeAt(0);
+        });
+
+      const decodedStr = gzip
+        .unzip(fromBase64)
+        .map((ch) => String.fromCharCode(ch))
+        .join("");
+
+      setInput(decodedStr);
+      encodeBold(decodedStr);
+    }
+  }, []);
+
+  function encodeBold(content: string) {
+    const paragraphs = content.split(/[\n]+/);
+
+    let final: JSX.Element[] = [];
+
+    for (const paragraph of paragraphs) {
+      const words = paragraph.split(/[\s]+/);
+
+      const out = words.map((word) => {
+        const howManyToBold = Math.ceil(word.length / 2);
+        const firstHalf = word.substring(0, howManyToBold);
+        const secondHalf = word.substring(howManyToBold, word.length);
+        return (
+          <span>
+            <Bold>{firstHalf}</Bold>
+            <NotBold>{secondHalf}</NotBold>
+            <span> </span>
+          </span>
+        );
+      });
+
+      final = [...final, ...out, <span>{"\n\n"}</span>];
+    }
+
+    setOutput(final);
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -63,33 +113,7 @@ function App() {
                 <Button
                   variant={"contained"}
                   onClick={() => {
-                    const paragraphs = input.split(/[\n]+/);
-
-                    let final: JSX.Element[] = [];
-
-                    for (const paragraph of paragraphs) {
-                      const words = paragraph.split(/[\s]+/);
-
-                      const out = words.map((word) => {
-                        const howManyToBold = Math.ceil(word.length / 2);
-                        const firstHalf = word.substring(0, howManyToBold);
-                        const secondHalf = word.substring(
-                          howManyToBold,
-                          word.length
-                        );
-                        return (
-                          <span>
-                            <Bold>{firstHalf}</Bold>
-                            <NotBold>{secondHalf}</NotBold>
-                            <span> </span>
-                          </span>
-                        );
-                      });
-
-                      final = [...final, ...out, <span>{"\n\n"}</span>];
-                    }
-
-                    setOutput(final);
+                    encodeBold(input);
                   }}
                 >
                   Go
